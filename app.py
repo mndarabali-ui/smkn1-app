@@ -20,6 +20,20 @@ st.markdown("""
     background-color: #f8fafc;
 }
 
+/* FULL CENTER LOGIN */
+.center-screen {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    padding-top: 10px;
+}
+
 /* TITLE */
 .title {
     font-size: 26px;
