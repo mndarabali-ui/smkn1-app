@@ -21,34 +21,34 @@ st.markdown("""
     background: #f5f7fb;
 }
 
-/* LOGIN WRAPPER */
+/* LOGIN BOX */
 .login-box {
     max-width: 420px;
     margin: auto;
-    margin-top: 40px;
-    padding: 20px;
+    margin-top: 60px;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
-/* HEADER LOGIN (NAIK KE ATAS) */
+/* CENTER HEADER DI DALAM LOGIN */
 .login-header {
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 /* TITLE */
 .title {
     font-size: 24px;
     font-weight: 700;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
-/* CARD DASHBOARD */
-.card {
-    background: white;
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    margin-bottom: 10px;
+/* LOGO STYLE */
+.login-header img {
+    display: block;
+    margin: auto;
 }
 
 </style>
@@ -74,11 +74,13 @@ if not st.session_state.login:
 
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-    # HEADER (NAIK KE ATAS)
+    # =========================
+    # CENTER LOGO + TITLE
+    # =========================
     st.markdown("<div class='login-header'>", unsafe_allow_html=True)
 
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=110)
+        st.image("logo.png", width=120)
     else:
         st.write("🏫")
 
@@ -87,7 +89,9 @@ if not st.session_state.login:
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # TAB LOGIN
+    # =========================
+    # LOGIN & REGISTER
+    # =========================
     tab1, tab2 = st.tabs(["Login", "Daftar"])
 
     with tab1:
@@ -99,7 +103,7 @@ if not st.session_state.login:
                 st.session_state.login = True
                 st.rerun()
             else:
-                st.error("Isi data lengkap")
+                st.error("Isi email & password")
 
     with tab2:
         email2 = st.text_input("Email baru")
@@ -108,7 +112,7 @@ if not st.session_state.login:
 
         if st.button("Daftar"):
             if email2 and pass2:
-                st.success("Akun berhasil dibuat")
+                st.success("Akun berhasil dibuat, silakan login")
             else:
                 st.warning("Lengkapi data")
 
@@ -116,7 +120,7 @@ if not st.session_state.login:
     st.stop()
 
 # =========================
-# HEADER DASHBOARD
+# DASHBOARD HEADER
 # =========================
 col1, col2, col3 = st.columns([1, 6, 2])
 
