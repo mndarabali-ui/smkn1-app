@@ -84,6 +84,23 @@ if "page" not in st.session_state:
 # =========================
 if not st.session_state.login:
 
+    st.markdown("<div class='center-screen'>", unsafe_allow_html=True)
+
+    # LOGO CENTER
+    if os.path.exists("logo.png"):
+        st.image("logo.png", width=120)
+    else:
+        st.write("🏫")
+
+    # TITLE
+    st.markdown("""
+        <div class="title">
+            SMKN 1 Denpasar
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
     # LOGIN / REGISTER
     tab1, tab2 = st.tabs(["Login", "Daftar"])
 
@@ -115,19 +132,6 @@ if not st.session_state.login:
             else:
                 save_user(email, password, role)
                 st.success("Akun berhasil dibuat!")
-
-    # LOGO DAN JUDUL DI TENGAH KONTAINER LOGIN DAN DAFTAR
-    st.markdown("<div style='text-align: center; margin-top: 20px;'>", unsafe_allow_html=True)
-    if os.path.exists("logo.png"):
-        st.image("logo.png", width=120)
-    else:
-        st.write("🏫")
-    st.markdown("""
-        <div style="font-size: 26px; font-weight: 700; margin-top: 15px;">
-            SMKN 1 Denpasar
-        </div>
-    """, unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
 
     st.stop()
 
