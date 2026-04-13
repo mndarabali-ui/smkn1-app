@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 # =========================
-# CONFIG
+# CONFIG & PAGE SETUP
 # =========================
 st.set_page_config(
     page_title="SMKN 1 Denpasar",
@@ -12,184 +12,162 @@ st.set_page_config(
 )
 
 # =========================
-# STYLE
+# STYLE (CSS)
 # =========================
 st.markdown("""
 <style>
+    /* Background utama */
+    .stApp {
+        background: #f5f7fb;
+    }
 
-.stApp {
-    background: #f5f7fb;
-}
+    /* Kotak Login */
+    .login-box {
+        max-width: 450px;
+        margin: auto;
+        margin-top: 50px;
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
 
-/* LOGIN BOX */
-.login-box {
-    max-width: 420px;
-    margin: auto;
-    margin-top: 60px;
-    background: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-}
+    /* Header di dalam login */
+    .login-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
 
-/* CENTER HEADER DI DALAM LOGIN */
-.login-header {
-    text-align: center;
-    margin-bottom: 20px;
-}
+    .title-text {
+        font-size: 28px;
+        font-weight: 800;
+        color: #1E1E1E;
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
 
-/* TITLE */
-.title {
-    font-size: 24px;
-    font-weight: 700;
-    margin-top: 10px;
-}
+    .subtitle-text {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
 
-/* LOGO STYLE */
-.login-header img {
-    display: block;
-    margin: auto;
-}
-
+    /* Styling Tab agar rapi */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 10px;
+        justify-content: center;
+    }
 </style>
 """, unsafe_allow_html=True)
 
 # =========================
-# SESSION
+# SESSION STATE
 # =========================
 if "login" not in st.session_state:
     st.session_state.login = False
 
-# =========================
-# LOGOUT
-# =========================
 def logout():
     st.session_state.login = False
     st.rerun()
 
 # =========================
-# LOGIN PAGE
-# =========================
-if not st.session_state.login:
-
-    st.markdown("<div class='login-box'>", unsafe_allow_html=True)
-
-    # =========================
-    # CENTER LOGO + TITLE
-    # =========================
-    st.markdown("<div class='login-header'>", unsafe_allow_html=True)
-
-    if os.path.exists("logo.png"):
-        st.image("logo.png", width=120)
-    else:
-        st.write("🏫")
-
-    st.markdown("<div class='title'>SMKN 1 Denpasar</div>", unsafe_allow_html=True)
-    st.caption("Sistem Analisis Minat & Bakat Siswa")
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # =========================
-    # LOGIN & REGISTER
-    # =========================
-    tab1, tab2 = st.tabs(["Login", "Daftar"])
-
-    with tab1:
-        email = st.text_input("Email")
-        password = st.text_input("Password", type="password")
-
-        if st.button("Login"):
-            if email and password:
-                st.session_state.login = True
-                st.rerun()
-            else:
-                st.error("Isi email & password")
-
-    with tab2:
-        email2 = st.text_input("Email baru")
-        pass2 = st.text_input("Password baru", type="password")
-        role = st.selectbox("Daftar sebagai", ["siswa", "guru"])
-
-        if st.button("Daftar"):
-            if email2 and pass2:
-                st.success("Akun berhasil dibuat, silakan login")
-            else:
-                st.warning("Lengkapi data")
-
-    st.markdown("</div>", unsafe_allow_html=True)
-    st.stop()
-
-# =========================
-# DASHBOARD HEADER
-# =========================
-col1, col2, col3 = st.columns([1, 6, 2])
-
-with col1:
-    if os.path.exists("logo.png"):
-        st.image("logo.png", width=60)
-    else:
-        st.write("🏫")
-
-with col2:
-    st.title("SMKN 1 Denpasar")
-    st.caption("Dashboard Analisis Minat & Bakat")
-
-with col3:
-    if st.button("🚪 Logout"):
-        logout()
-
-st.divider()
-
-# =========================
-# DATA DEMO
+# DATA LOADING
 # =========================
 @st.cache_data
 def load_data():
     try:
+        # Menggunakan URL spreadsheet yang kamu berikan
         url = "https://docs.google.com/spreadsheets/d/1wIMyXy5C0Q6TLUb09jJcKkTWQ830F_phjYtwOUthyX8/export?format=csv"
         df = pd.read_csv(url)
         df.columns = df.columns.str.strip()
         return df
-    except:
+    except Exception:
         return pd.DataFrame()
 
-df = load_data()
+# =========================
+# HALAMAN LOGIN
+# =========================
+if not st.session_state.login:
+    # Kontainer utama login (HTML)
+    st.markdown("<div class='login-box'>", unsafe_allow_html=True)
+    
+    # Bagian Logo (Centering menggunakan kolom Streamlit)
+    col_l1, col_l2, col_l3 = st.columns([1, 0.8, 1])
+    with col_l2:
+        if os.path.exists("logo.png"):
+            st.image("logo.png", use_container_width=True)
+        else:
+            st.markdown("<h1 style='text-align: center;'>🏫</h1>", unsafe_allow_html=True)
 
-if df.empty:
-    st.warning("Data tidak tersedia")
+    # Bagian Judul (HTML)
+    st.markdown("""
+        <div class='login-header'>
+            <div class='title-text'>SMKN 1 Denpasar</div>
+            <div class='subtitle-text'>Sistem Analisis Minat & Bakat Siswa</div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Tabs Login & Daftar
+    tab1, tab2 = st.tabs(["🔐 Login", "📝 Daftar"])
+
+    with tab1:
+        email = st.text_input("Email", placeholder="Masukkan email anda", key="log_email")
+        password = st.text_input("Password", type="password", placeholder="Masukkan password", key="log_pass")
+        st.write(" ") # Spacer
+        if st.button("Masuk Ke Sistem", use_container_width=True, type="primary"):
+            if email and password:
+                st.session_state.login = True
+                st.rerun()
+            else:
+                st.error("Silakan lengkapi email dan password.")
+
+    with tab2:
+        st.text_input("Email Baru", placeholder="contoh@mail.com")
+        st.text_input("Password Baru", type="password")
+        st.selectbox("Daftar sebagai", ["Siswa", "Guru", "Admin"])
+        if st.button("Buat Akun", use_container_width=True):
+            st.success("Akun berhasil dibuat! Silakan pindah ke tab Login.")
+
+    st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
 
 # =========================
-# MENU
+# HALAMAN DASHBOARD (Setelah Login)
 # =========================
-menu = st.radio("Menu", ["Dashboard", "Data", "Ranking", "Settings"], horizontal=True)
+df = load_data()
 
-if menu == "Dashboard":
-    st.subheader("📊 Dashboard")
+# Header Dashboard
+head_col1, head_col2 = st.columns([8, 2])
+with head_col1:
+    st.title("🏫 Dashboard Utama")
+    st.caption("Selamat datang di Sistem Analisis SMKN 1 Denpasar")
+with head_col2:
+    st.write(" ")
+    if st.button("🚪 Keluar", use_container_width=True):
+        logout()
 
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Total Siswa", len(df))
-    c2.metric("Rata-rata", 80)
-    c3.metric("Status", "Aktif")
+st.divider()
 
-    st.bar_chart(df.iloc[:, 0:1])
+if df.empty:
+    st.error("Gagal memuat data dari database.")
+else:
+    # Menu Navigasi
+    menu = st.radio("Pilih Menu:", ["Ringkasan", "Database Siswa", "Analisis Ranking"], horizontal=True)
 
-elif menu == "Data":
-    st.subheader("📋 Data")
-    st.dataframe(df)
+    if menu == "Ringkasan":
+        st.subheader("📊 Statistik Terkini")
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Total Responden", len(df))
+        m2.metric("Rata-rata Skor", "84.5%")
+        m3.metric("Status Server", "Online")
+        
+        st.area_chart(df.iloc[:, 0:1])
 
-elif menu == "Ranking":
-    st.subheader("🏆 Ranking")
-    st.dataframe(df.head(10))
+    elif menu == "Database Siswa":
+        st.subheader("📋 Data Lengkap")
+        st.dataframe(df, use_container_width=True)
+        st.download_button("Unduh Data (.csv)", df.to_csv(index=False), "data_siswa.csv")
 
-elif menu == "Settings":
-    st.subheader("⚙️ Settings")
-
-    if st.button("Refresh"):
-        st.rerun()
-
-    st.download_button(
-        "Download CSV",
-        df.to_csv(index=False),
-        file_name="data.csv"
-    )
+    elif menu == "Analisis Ranking":
+        st.subheader("🏆 Top 10 Siswa Terbaik")
+        st.table(df.head(10))
