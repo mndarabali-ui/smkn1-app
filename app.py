@@ -22,12 +22,13 @@ st.markdown("""
 
 /* FULL CENTER LOGIN */
 .center-screen {
-    height: 100vh;
+    height: 80vh;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: column;
     text-align: center;
+    padding-top: 50px;
 }
 
 /* TITLE */
@@ -82,25 +83,25 @@ if not st.session_state.login:
 
     st.markdown("<div class='center-screen'>", unsafe_allow_html=True)
 
+    # LOGO CENTER
+    if os.path.exists("logo.png"):
+        st.image("logo.png", width=120)
+    else:
+        st.write("🏫")
+
+    # TITLE
+    st.markdown("""
+        <div class="title">
+            SMKN 1 Denpasar
+        </div>
+    """, unsafe_allow_html=True)
+
     st.markdown("</div>", unsafe_allow_html=True)
 
     # LOGIN / REGISTER
     tab1, tab2 = st.tabs(["Login", "Daftar"])
 
     with tab1:
-        # LOGO CENTER DALAM TAB LOGIN
-        st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-        if os.path.exists("logo.png"):
-            st.image("logo.png", width=100)
-        else:
-            st.write("🏫")
-        st.markdown("""
-            <div style="font-size: 20px; font-weight: 600; margin-bottom: 20px;">
-                SMKN 1 Denpasar
-            </div>
-        """, unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
 
@@ -116,19 +117,6 @@ if not st.session_state.login:
                 st.error("Login gagal")
 
     with tab2:
-        # LOGO CENTER DALAM TAB DAFTAR
-        st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-        if os.path.exists("logo.png"):
-            st.image("logo.png", width=100)
-        else:
-            st.write("🏫")
-        st.markdown("""
-            <div style="font-size: 20px; font-weight: 600; margin-bottom: 20px;">
-                SMKN 1 Denpasar
-            </div>
-        """, unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-
         email = st.text_input("Email baru")
         password = st.text_input("Password baru", type="password")
         role = st.selectbox("Daftar sebagai", ["siswa", "guru"])
