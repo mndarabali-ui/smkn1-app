@@ -11,36 +11,59 @@ st.set_page_config(
 )
 
 # =========================
-# STYLE (CSS)
+# STYLE (CSS FINAL - HAPUS KOTAK)
 # =========================
 st.markdown("""
 <style>
-.stApp {
-    background-color: #f8fafc;
+/* Hilangkan padding berlebih dari Streamlit */
+.block-container { 
+    padding-top: 2rem; 
 }
 
-/* LOGIN BOX UTAMA */
+.stApp { 
+    background-color: #f8fafc; 
+}
+
+/* LOGIN BOX - Didesain ulang agar bersih */
 .login-box {
     max-width: 420px;
     margin: auto;
-    margin-top: 50px;
+    margin-top: 30px;
     background: white;
-    padding: 30px;
+    padding: 35px;
     border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 25px rgba(0,0,0,0.1);
 }
 
-.title {
+/* Container untuk Logo & Teks agar Center tanpa Kolom */
+.center-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+}
+
+.title-text {
     font-size: 26px;
     font-weight: 700;
+    color: #1e293b;
     margin-top: 15px;
-    text-align: center;
+    margin-bottom: 5px;
 }
 
-/* Memaksa Logo di Tengah */
+.subtitle-text {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* Memaksa gambar logo yang dipanggil via st.image agar center */
 [data-testid="stImage"] {
     display: flex;
     justify-content: center;
+    margin-bottom: 0px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -62,59 +85,59 @@ def logout():
 # LOGIN PAGE
 # =========================
 if not st.session_state.login:
-    # Pembungkus utama dipindahkan ke sini
+    # Membuka div login-box
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
-
-    # Logo Center (Menggunakan kolom untuk mengatur ukuran)
-    with col_l2:
-        if os.path.exists("logo.png"):
-            st.image("logo.png", use_container_width=True)
-        else:
-            st.write("🏫")
-
-    # Teks Judul Center
+    
+    # 1. Header (Logo & Judul) dalam satu div center
+    st.markdown("<div class='center-header'>", unsafe_allow_html=True)
+    
+    if os.path.exists("logo.png"):
+        st.image("logo.png", width=80)
+    else:
+        st.write("🏫")
+        
     st.markdown("""
-        <div style='text-align: center;'>
-            <div class='title'>SMKN 1 Denpasar</div>
-            <div style='color: gray; font-size: 14px; margin-bottom: 20px;'>
-                Sistem Analisis Minat & Bakat Siswa
-            </div>
-        </div>
+        <div class='title-text'>SMKN 1 Denpasar</div>
+        <div class='subtitle-text'>Sistem Analisis Minat & Bakat Siswa</div>
+    </div>
     """, unsafe_allow_html=True)
 
-    # Form Login & Daftar
+    # 2. Tabs Login (Tanpa Kolom di atasnya)
     tab1, tab2 = st.tabs(["Login", "Daftar"])
+    
     with tab1:
-        email = st.text_input("Email", key="login_user")
-        password = st.text_input("Password", type="password", key="login_pass")
-        if st.button("Login", use_container_width=True, type="primary"):
+        email = st.text_input("Email", placeholder="Masukkan email anda", key="l_user")
+        password = st.text_input("Password", type="password", key="l_pass")
+        if st.button("Login Sekarang", use_container_width=True, type="primary"):
             if email and password:
                 st.session_state.login = True
                 st.session_state.role = "guru"
                 st.rerun()
-    
+            else:
+                st.error("Isi email dan password!")
+                
     st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
 
 # ============================================================
-# DASHBOARD UTAMA
+# DASHBOARD UTAMA (SETELAH LOGIN)
 # ============================================================
 
-# HEADER & TOMBOL LOGOUT
-head1, head2 = st.columns([8, 2])
-with head1:
+# HEADER ATAS & TOMBOL LOGOUT
+h_col1, h_col2 = st.columns([8, 2])
+with h_col1:
     st.title("🏫 Dashboard Utama")
-    st.caption("Selamat datang di Sistem Analisis SMKN 1 Denpasar")
+    st.caption("Selamat datang kembali di sistem SMKN 1 Denpasar")
 
-with head2:
-    st.write("##") 
+with h_col2:
+    st.write("##") # Penyeimbang posisi vertikal
     if st.button("🚪 Logout", use_container_width=True):
         logout()
 
 st.divider()
 
 # =========================
-# LOAD DATA
+# LOAD DATA & ANALISIS
 # =========================
 @st.cache_data
 def load_data():
@@ -129,12 +152,10 @@ def load_data():
 df = load_data()
 
 if df.empty:
-    st.warning("Data tidak tersedia.")
+    st.warning("Gagal memuat data dari sumber.")
     st.stop()
 
-# =========================
-# ANALISIS SKOR
-# =========================
+# Kalkulasi Skor
 df["Logika"] = df[["Saya suka membuat program / coding", "Saya suka bekerja dengan angka / matematika", "Saya suka bekerja menggunakan komputer"]].mean(axis=1)
 df["Kreatif"] = df[["Saya suka membuat desain visual (poster, video, UI)", "Saya suka menggambar / ilustrasi"]].mean(axis=1)
 df["Teknik"] = df[["Saya suka memperbaiki mesin / kendaraan", "Saya suka bekerja dengan listrik / instalasi", "Saya suka merakit atau membongkar alat", "Saya suka bekerja di lapangan"]].mean(axis=1)
@@ -142,22 +163,16 @@ df["Sosial"] = df[["Saya suka berbicara di depan umum", "Saya suka bekerja dalam
 df["Skor"] = df[["Logika", "Kreatif", "Teknik", "Sosial"]].mean(axis=1)
 
 # =========================
-# MENU NAVIGASI
+# MENU UTAMA
 # =========================
-menu = st.radio(
-    "Navigasi Menu:",
-    ["Dashboard", "Data", "Ranking", "Settings"],
-    horizontal=True
-)
+menu = st.radio("Pilih Menu:", ["Dashboard", "Data Siswa", "Ranking"], horizontal=True)
 
 if menu == "Dashboard":
-    st.subheader("📊 Statistik Siswa")
+    st.subheader("📊 Analisis Statistik")
     
-    col_f1, col_f2 = st.columns(2)
-    with col_f1:
-        jurusan = st.selectbox("Filter Jurusan", ["Semua"] + list(df["Jurusan SMK"].dropna().unique()))
-    with col_f2:
-        search = st.text_input("Cari Nama Siswa")
+    c1, c2 = st.columns(2)
+    jurusan = c1.selectbox("Filter Jurusan", ["Semua"] + list(df["Jurusan SMK"].dropna().unique()))
+    search = c2.text_input("Cari Nama")
 
     temp = df.copy()
     if jurusan != "Semua":
@@ -165,26 +180,17 @@ if menu == "Dashboard":
     if search:
         temp = temp[temp["Nama Lengkap"].str.contains(search, case=False, na=False)]
 
-    m1, m2 = st.columns(2)
-    m1.metric("Total Responden", len(temp))
-    m2.metric("Rata-rata Skor", round(temp["Skor"].mean(), 2))
+    st.metric("Total Siswa", len(temp))
+    st.bar_chart(temp[["Logika", "Kreatif", "Teknik", "Sosial"]])
 
-    st.bar_chart(temp[["Logika", "Kreatif", "Teknik", "Sosial"]], use_container_width=True)
-
-elif menu == "Data":
-    st.subheader("📋 Database Lengkap Siswa")
+elif menu == "Data Siswa":
+    st.subheader("📋 Database")
     if st.session_state.role == "guru":
         st.dataframe(df, use_container_width=True)
     else:
-        st.warning("Hanya guru yang bisa melihat database.")
+        st.warning("Akses dibatasi.")
 
 elif menu == "Ranking":
-    st.subheader("🏆 Top 10 Ranking")
+    st.subheader("🏆 Top 10 Siswa")
     top = df.sort_values(by="Skor", ascending=False).head(10)
     st.table(top[["Nama Lengkap", "Jurusan SMK", "Skor"]])
-
-elif menu == "Settings":
-    st.subheader("⚙️ Pengaturan")
-    if st.button("Refresh Data"):
-        st.rerun()
-    st.download_button("Download CSV", df.to_csv(index=False), file_name="data.csv")
