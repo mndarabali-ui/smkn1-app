@@ -78,11 +78,12 @@ if "page" not in st.session_state:
 # =========================
 # LOGIN PAGE (CENTER FULL)
 # =========================
+# =========================
+# LOGIN PAGE
+# =========================
 if not st.session_state.login:
-    # Membuka container login box
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-    # 1. Logo (Dibuat kecil dan di tengah pakai kolom)
     col_l1, col_l2, col_l3 = st.columns([1.5, 0.5, 1.5])
     with col_l2:
         if os.path.exists("logo.png"):
@@ -90,7 +91,6 @@ if not st.session_state.login:
         else:
             st.write("🏫")
 
-    # 2. JUDUL & SUBJUDUL (Dibuat ke tengah dengan style text-align: center)
     st.markdown("""
         <div style='text-align: center;'>
             <div class='title'>SMKN 1 Denpasar</div>
@@ -100,7 +100,6 @@ if not st.session_state.login:
         </div>
     """, unsafe_allow_html=True)
 
-    # 3. Form Login (Tabs)
     tab1, tab2 = st.tabs(["Login", "Daftar"])
     
     with tab1:
@@ -108,10 +107,12 @@ if not st.session_state.login:
         password = st.text_input("Password", type="password", key="login_pass")
         if st.button("Login", use_container_width=True):
             if email and password:
+                # --- PERBAIKAN DI SINI ---
                 st.session_state.login = True
+                st.session_state.role = "guru" # Kita set role-nya di sini agar tidak error
+                # -------------------------
                 st.rerun()
     
-    # Menutup container login box
     st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
 
