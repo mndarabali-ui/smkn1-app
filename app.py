@@ -190,8 +190,13 @@ df["Rekomendasi"] = df.apply(rekom, axis=1)
 # =========================
 # MENU
 # =========================
+st.markdown("""
+    <div class="title" style="margin-bottom: 10px;">
+        SMKN 1 Denpasar
+    </div>
+""", unsafe_allow_html=True)
 menu = st.radio(
-    "Menu",
+    "",
     ["Dashboard", "Data", "Ranking", "Settings"],
     horizontal=True
 )
