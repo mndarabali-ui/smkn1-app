@@ -12,10 +12,11 @@ st.set_page_config(
 )
 
 # =========================
-# STYLE (Halaman Login Rapi)
+# STYLE
 # =========================
 st.markdown("""
 <style>
+
 .stApp {
     background: #f5f7fb;
 }
@@ -26,28 +27,30 @@ st.markdown("""
     margin: auto;
     margin-top: 60px;
     background: white;
-    padding: 30px;
+    padding: 25px;
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
-/* CENTER HEADER */
+/* CENTER HEADER DI DALAM LOGIN */
 .login-header {
     text-align: center;
     margin-bottom: 20px;
 }
 
+/* TITLE */
 .title {
     font-size: 24px;
     font-weight: 700;
     margin-top: 10px;
 }
 
-/* Memaksa Logo di Tengah Kolom */
+/* CSS untuk memaksa st.image di tengah */
 [data-testid="stImage"] {
     display: flex;
     justify-content: center;
 }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -65,33 +68,38 @@ def logout():
     st.rerun()
 
 # =========================
-# LOGIN PAGE (Hanya Bagian Ini yang Berubah)
+# LOGIN PAGE
 # =========================
 if not st.session_state.login:
+
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-    # Logo dikecilkan dengan kolom [1.5, 0.5, 1.5]
-    col_l1, col_l2, col_l3 = st.columns([1.5, 0.5, 1.5])
+    # Memakai kolom untuk mengecilkan logo agar tidak meluber
+    col_l1, col_l2, col_l3 = st.columns([1.3, 0.4, 1.3])
     with col_l2:
         if os.path.exists("logo.png"):
+            # Ukuran logo otomatis mengikuti lebar kolom tengah yang sempit
             st.image("logo.png", use_container_width=True)
         else:
             st.write("🏫")
 
-    # Judul & Caption Center
+    # Header Teks (Center)
     st.markdown("""
         <div class='login-header'>
             <div class='title'>SMKN 1 Denpasar</div>
-            <div style='color:gray; font-size:14px;'>Sistem Analisis Minat & Bakat Siswa</div>
+            <div style='color: gray; font-size: 14px;'>Sistem Analisis Minat & Bakat Siswa</div>
         </div>
     """, unsafe_allow_html=True)
 
-    # Tabs
+    # =========================
+    # LOGIN & REGISTER
+    # =========================
     tab1, tab2 = st.tabs(["Login", "Daftar"])
 
     with tab1:
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
+
         if st.button("Login", use_container_width=True):
             if email and password:
                 st.session_state.login = True
@@ -103,6 +111,7 @@ if not st.session_state.login:
         email2 = st.text_input("Email baru")
         pass2 = st.text_input("Password baru", type="password")
         role = st.selectbox("Daftar sebagai", ["siswa", "guru"])
+
         if st.button("Daftar", use_container_width=True):
             if email2 and pass2:
                 st.success("Akun berhasil dibuat, silakan login")
@@ -113,7 +122,7 @@ if not st.session_state.login:
     st.stop()
 
 # =========================
-# DASHBOARD (KEMBALI KE KODE ASLI KAMU)
+# DASHBOARD HEADER (Kode Asli Kamu)
 # =========================
 col1, col2, col3 = st.columns([1, 6, 2])
 
@@ -133,7 +142,9 @@ with col3:
 
 st.divider()
 
+# =========================
 # DATA DEMO
+# =========================
 @st.cache_data
 def load_data():
     try:
@@ -150,15 +161,19 @@ if df.empty:
     st.warning("Data tidak tersedia")
     st.stop()
 
+# =========================
 # MENU
+# =========================
 menu = st.radio("Menu", ["Dashboard", "Data", "Ranking", "Settings"], horizontal=True)
 
 if menu == "Dashboard":
     st.subheader("📊 Dashboard")
+
     c1, c2, c3 = st.columns(3)
     c1.metric("Total Siswa", len(df))
     c2.metric("Rata-rata", 80)
     c3.metric("Status", "Aktif")
+
     st.bar_chart(df.iloc[:, 0:1])
 
 elif menu == "Data":
@@ -171,8 +186,10 @@ elif menu == "Ranking":
 
 elif menu == "Settings":
     st.subheader("⚙️ Settings")
+
     if st.button("Refresh"):
         st.rerun()
+
     st.download_button(
         "Download CSV",
         df.to_csv(index=False),
