@@ -22,41 +22,20 @@ st.markdown("""
 
 /* FULL CENTER LOGIN */
 .center-screen {
-    min-height: 100vh;
+    height: 80vh;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    padding: 40px 20px;
-}
-
-.login-card {
-    width: 380px;
-    max-width: 100%;
-    background: #ffffff;
-    border-radius: 28px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
-    padding: 32px 28px 28px;
-}
-
-.login-header {
+    flex-direction: column;
     text-align: center;
-    margin-bottom: 24px;
+    padding-top: 50px;
 }
 
-.login-header img,
-.login-header .logo-text {
-    display: inline-block;
-    margin-bottom: 16px;
-}
-
+/* TITLE */
 .title {
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 700;
-    margin: 0;
-}
-
-.tab-container {
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 /* container */
@@ -102,21 +81,22 @@ if "page" not in st.session_state:
 # =========================
 if not st.session_state.login:
 
-    st.markdown("<div class='center-screen'><div class='login-card'>", unsafe_allow_html=True)
+    st.markdown("<div class='center-screen'>", unsafe_allow_html=True)
 
-    st.markdown("<div class='login-header'>", unsafe_allow_html=True)
+    # LOGO CENTER
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=100)
+        st.image("logo.png", width=120)
     else:
-        st.markdown("<div class='logo-text' style='font-size:48px;'>🏫</div>", unsafe_allow_html=True)
+        st.write("🏫")
+
+    # TITLE
     st.markdown("""
         <div class="title">
             SMKN 1 Denpasar
         </div>
     """, unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("<div class='tab-container'>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
     # LOGIN / REGISTER
     tab1, tab2 = st.tabs(["Login", "Daftar"])
@@ -150,7 +130,6 @@ if not st.session_state.login:
                 save_user(email, password, role)
                 st.success("Akun berhasil dibuat!")
 
-    st.markdown("</div></div>", unsafe_allow_html=True)
     st.stop()
 
 # =========================
