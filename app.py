@@ -22,23 +22,41 @@ st.markdown("""
 
 /* FULL CENTER LOGIN */
 .center-screen {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    text-align: center;
-    padding-top: 10px;
+    padding: 40px 20px;
 }
 
-/* TITLE */
+.login-card {
+    width: 380px;
+    max-width: 100%;
+    background: #ffffff;
+    border-radius: 28px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+    padding: 32px 28px 28px;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.login-header img,
+.login-header .logo-text {
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
 .title {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
-    margin-top: 15px;
+    margin: 0;
+}
+
+.tab-container {
+    margin-top: 10px;
 }
 
 /* container */
@@ -84,22 +102,21 @@ if "page" not in st.session_state:
 # =========================
 if not st.session_state.login:
 
-    st.markdown("<div class='center-screen'>", unsafe_allow_html=True)
+    st.markdown("<div class='center-screen'><div class='login-card'>", unsafe_allow_html=True)
 
-    # LOGO CENTER
+    st.markdown("<div class='login-header'>", unsafe_allow_html=True)
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=120)
+        st.image("logo.png", width=100)
     else:
-        st.write("🏫")
-
-    # TITLE
+        st.markdown("<div class='logo-text' style='font-size:48px;'>🏫</div>", unsafe_allow_html=True)
     st.markdown("""
         <div class="title">
             SMKN 1 Denpasar
         </div>
     """, unsafe_allow_html=True)
-
     st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("<div class='tab-container'>", unsafe_allow_html=True)
 
     # LOGIN / REGISTER
     tab1, tab2 = st.tabs(["Login", "Daftar"])
@@ -133,6 +150,7 @@ if not st.session_state.login:
                 save_user(email, password, role)
                 st.success("Akun berhasil dibuat!")
 
+    st.markdown("</div></div>", unsafe_allow_html=True)
     st.stop()
 
 # =========================
