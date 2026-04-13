@@ -22,13 +22,13 @@ st.markdown("""
 
 /* FULL CENTER LOGIN */
 .center-screen {
-    height: 80vh;
+    height: 100vh;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     flex-direction: column;
     text-align: center;
-    padding-top: 50px;
+    padding-top: 10px;
 }
 
 /* TITLE */
