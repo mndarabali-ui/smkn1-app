@@ -71,13 +71,14 @@ def save_user(email, password, role):
 # =========================
 if "login" not in st.session_state:
     st.session_state.login = False
+if "role" not in st.session_state:
+    st.session_state.role = None
 
-if "page" not in st.session_state:
-    st.session_state.page = "Dashboard"
-
-# =========================
-# LOGIN PAGE (CENTER FULL)
-# =========================
+# TARUH FUNGSI INI DI ATAS
+def logout():
+    st.session_state.login = False
+    st.session_state.role = None
+    st.rerun()
 # =========================
 # LOGIN PAGE
 # =========================
