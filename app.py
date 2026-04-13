@@ -57,6 +57,13 @@ st.markdown("""
         gap: 10px;
         justify-content: center;
     }
+
+    /* Tambahan CSS untuk memaksa logo di tengah di dalam kolomnya */
+    [data-testid="stImage"] {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -91,13 +98,17 @@ if not st.session_state.login:
     # Kontainer utama login (HTML)
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
     
-    # Bagian Logo (Centering menggunakan kolom Streamlit)
-    col_l1, col_l2, col_l3 = st.columns([1, 0.8, 1])
+    # --- BAGIAN LOGO (DIPERBARUI UNTUK MEMPERKECIL) ---
+    # Ubah rasio kolom untuk memperkecil ruang logo di tengah (kolom tengah dipersempit)
+    # Rasio awal [1, 0.8, 1], rasio baru [1.3, 0.4, 1.3] (membuat kolom tengah lebih kecil)
+    col_l1, col_l2, col_l3 = st.columns([1.3, 0.4, 1.3])
+    
     with col_l2:
         if os.path.exists("logo.png"):
             st.image("logo.png", use_container_width=True)
         else:
-            st.markdown("<h1 style='text-align: center;'>🏫</h1>", unsafe_allow_html=True)
+            # Jika file logo tidak ada, emoji juga dikecilkan
+            st.markdown("<h2 style='text-align: center;'>🏫</h2>", unsafe_allow_html=True)
 
     # Bagian Judul (HTML)
     st.markdown("""
