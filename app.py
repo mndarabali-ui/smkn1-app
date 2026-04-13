@@ -84,39 +84,21 @@ def logout():
 # =========================
 if not st.session_state.login:
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
-
+    
+    # ... (Kodingan Logo & Judul kamu yang sudah rapi tadi) ...
     col_l1, col_l2, col_l3 = st.columns([1.5, 0.5, 1.5])
     with col_l2:
         if os.path.exists("logo.png"):
             st.image("logo.png", use_container_width=True)
-        else:
-            st.write("🏫")
-
-    st.markdown("""
-        <div style='text-align: center;'>
-            <div class='title'>SMKN 1 Denpasar</div>
-            <div style='color: gray; font-size: 14px; margin-bottom: 20px;'>
-                Sistem Analisis Minat & Bakat Siswa
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-
-    tab1, tab2 = st.tabs(["Login", "Daftar"])
     
-    with tab1:
-        email = st.text_input("Email", key="login_user")
-        password = st.text_input("Password", type="password", key="login_pass")
-        if st.button("Login", use_container_width=True):
-            if email and password:
-                # --- PERBAIKAN DI SINI ---
-                st.session_state.login = True
-                st.session_state.role = "guru" # Kita set role-nya di sini agar tidak error
-                # -------------------------
-                st.rerun()
+    st.markdown("<h2 style='text-align: center;'>SMKN 1 Denpasar</h2>", unsafe_allow_html=True)
+
+    if st.button("Masuk Sebagai Guru (Demo)", use_container_width=True):
+        st.session_state.login = True
+        st.session_state.role = "guru" # Penting agar menu Data tidak error
+        st.rerun()
     
-    st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
-
 # =========================
 # LOAD DATA
 # =========================
@@ -180,6 +162,18 @@ menu = st.radio(
 # =========================
 # DASHBOARD
 # =========================
+with head1:
+    st.title("🏫 Dashboard Utama")
+    st.caption("Selamat datang di Sistem Analisis SMKN 1 Denpasar")
+
+with head2:
+    st.write(" ") # Kasih spasi dikit biar sejajar sama judul
+    # TOMBOL LOGOUT DI SINI
+    if st.button("🚪 Logout", use_container_width=True):
+        logout()
+
+st.divider()
+
 if menu == "Dashboard":
 
     st.subheader("📊 Dashboard")
