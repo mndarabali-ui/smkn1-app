@@ -11,41 +11,32 @@ st.set_page_config(
 )
 
 # =========================
-# STYLE (CSS) - DIBERSIHKAN TOTAL
+# STYLE
 # =========================
 st.markdown("""
 <style>
-/* Hilangkan ruang kosong di paling atas aplikasi */
-.block-container { padding-top: 1rem; }
+.stApp {
+    background-color: #f8fafc;
+}
 
-.stApp { background-color: #f8fafc; }
-
-/* KOTAK LOGIN UTAMA */
+/* KOTAK PUTIH HANYA UNTUK FORM (DIBERSIHKAN DARI LOGO) */
 .login-box {
     max-width: 420px;
     margin: auto;
-    margin-top: 50px;
     background: white;
-    padding: 35px;
+    padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
-/* Memaksa Logo & Teks ke Tengah Tanpa Container Streamlit */
-.center-header {
-    text-align: center;
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-.title-text {
+.title {
     font-size: 26px;
     font-weight: 700;
-    color: #1e293b;
-    margin-top: 15px;
+    margin-top: 10px;
+    text-align: center;
 }
 
-/* Memastikan st.image berada di tengah */
+/* Memaksa st.image ke tengah */
 [data-testid="stImage"] {
     display: flex;
     justify-content: center;
@@ -70,51 +61,47 @@ def logout():
 # LOGIN PAGE
 # =========================
 if not st.session_state.login:
-    # Buka kotak login
+    # 1. LOGO DITARUH DI LUAR login-box PAKAI KOLOM (Logo tetap center, kotak atas hilang!)
+    st.write("##") # Jarak dari atas layar
+    col_l1, col_l2, col_l3 = st.columns([1.5, 0.5, 1.5])
+    with col_l2:
+        if os.path.exists("logo.png"):
+            st.image("logo.png", use_container_width=True)
+        else:
+            st.write("🏫")
+
+    # 2. BARU MASUK KE login-box UNTUK FORM LOGIN
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-    # 1. Header (Logo & Judul) - Pakai HTML murni agar tidak ada kotak hantu
-    st.markdown("<div class='center-header'>", unsafe_allow_html=True)
-    if os.path.exists("logo.png"):
-        st.image("logo.png", width=80)
-    else:
-        st.write("🏫")
-    
     st.markdown("""
-            <div class='title-text'>SMKN 1 Denpasar</div>
-            <div style='color: gray; font-size: 14px;'>
+        <div style='text-align: center;'>
+            <div class='title'>SMKN 1 Denpasar</div>
+            <div style='color: gray; font-size: 14px; margin-bottom: 20px;'>
                 Sistem Analisis Minat & Bakat Siswa
             </div>
         </div>
     """, unsafe_allow_html=True)
 
-    st.write("---") # Garis pembatas tipis
-
-    # 2. Form Login (Langsung input, HAPUS st.tabs karena itu penyebab kotaknya)
-    email = st.text_input("Email", placeholder="Masukkan email anda", key="l_user")
-    password = st.text_input("Password", type="password", key="l_pass")
+    tab1, tab2 = st.tabs(["Login", "Daftar"])
+    with tab1:
+        email = st.text_input("Email", key="login_user")
+        password = st.text_input("Password", type="password", key="login_pass")
+        if st.button("Login", use_container_width=True, type="primary"):
+            if email and password:
+                st.session_state.login = True
+                st.session_state.role = "guru"
+                st.rerun()
     
-    st.write("") # Spacer
-    if st.button("Login Sekarang", use_container_width=True, type="primary"):
-        if email and password:
-            st.session_state.login = True
-            st.session_state.role = "guru"
-            st.rerun()
-    
-    # 3. Footer Login
-    st.markdown("<div style='text-align:center; font-size:12px; margin-top:15px; color:#64748b;'>Belum punya akun? <span style='color:blue; cursor:pointer;'>Daftar</span></div>", unsafe_allow_html=True)
-
     st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
 
 # ============================================================
-# DASHBOARD UTAMA (SETELAH LOGIN)
+# DASHBOARD UTAMA
 # ============================================================
 head1, head2 = st.columns([8, 2])
 with head1:
     st.title("🏫 Dashboard Utama")
-    st.caption("Selamat datang di Sistem Analisis SMKN 1 Denpasar")
-
+    st.caption("SMKN 1 Denpasar")
 with head2:
     st.write("##") 
     if st.button("🚪 Logout", use_container_width=True):
@@ -122,22 +109,19 @@ with head2:
 
 st.divider()
 
-# --- LOAD DATA ---
+# LOAD DATA & ANALISIS
+url = "https://docs.google.com/spreadsheets/d/1wIMyXy5C0Q6TLUb09jJcKkTWQ830F_phjYtwOUthyX8/export?format=csv"
 try:
-    url = "https://docs.google.com/spreadsheets/d/1wIMyXy5C0Q6TLUb09jJcKkTWQ830F_phjYtwOUthyX8/export?format=csv"
     df = pd.read_csv(url)
     df.columns = df.columns.str.strip()
-
-    menu = st.radio("Navigasi:", ["Dashboard", "Data", "Ranking"], horizontal=True)
+    
+    menu = st.radio("Menu", ["Dashboard", "Data", "Ranking"], horizontal=True)
     
     if menu == "Dashboard":
         st.subheader("📊 Statistik")
-        st.metric("Total Responden", len(df))
-        # Logika analisis singkat
-        cols = ["Logika", "Kreatif", "Teknik", "Sosial"]
-        # Dummy data untuk contoh jika kolom belum ada di CSV
+        st.metric("Total Siswa", len(df))
         st.bar_chart(df.head(10)) 
     elif menu == "Data":
         st.dataframe(df, use_container_width=True)
 except:
-    st.error("Gagal memuat data dari Google Sheets.")
+    st.error("Gagal memuat data.")
