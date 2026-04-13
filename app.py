@@ -21,27 +21,34 @@ st.markdown("""
     background: #f5f7fb;
 }
 
-/* CENTER LOGIN PAGE */
-.center {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+/* LOGIN WRAPPER */
+.login-box {
+    max-width: 420px;
+    margin: auto;
+    margin-top: 40px;
+    padding: 20px;
+}
+
+/* HEADER LOGIN (NAIK KE ATAS) */
+.login-header {
     text-align: center;
+    margin-bottom: 15px;
 }
 
 /* TITLE */
 .title {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
-/* CARD LOOK */
-.block-container {
-    padding-left: 30px;
-    padding-right: 30px;
+/* CARD DASHBOARD */
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 10px;
 }
 
 </style>
@@ -53,73 +60,59 @@ st.markdown("""
 if "login" not in st.session_state:
     st.session_state.login = False
 
-if "page" not in st.session_state:
-    st.session_state.page = "login"
-
 # =========================
 # LOGOUT
 # =========================
 def logout():
     st.session_state.login = False
-    st.session_state.page = "login"
+    st.rerun()
 
 # =========================
-# LOGIN PAGE (CENTER LOGO + TITLE)
+# LOGIN PAGE
 # =========================
 if not st.session_state.login:
 
-    st.markdown("<div class='center'>", unsafe_allow_html=True)
+    st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-    # LOGO CENTER
+    # HEADER (NAIK KE ATAS)
+    st.markdown("<div class='login-header'>", unsafe_allow_html=True)
+
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=150)
+        st.image("logo.png", width=110)
     else:
         st.write("🏫")
 
-    # TITLE CENTER
-    st.markdown("""
-        <div class="title">
-            SMKN 1 Denpasar
-        </div>
-    """, unsafe_allow_html=True)
-
+    st.markdown("<div class='title'>SMKN 1 Denpasar</div>", unsafe_allow_html=True)
     st.caption("Sistem Analisis Minat & Bakat Siswa")
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # =========================
-    # LOGIN & REGISTER
-    # =========================
+    # TAB LOGIN
     tab1, tab2 = st.tabs(["Login", "Daftar"])
 
-    # LOGIN
     with tab1:
-        st.subheader("Login")
-        email = st.text_input("Email", key="login_email")
-        password = st.text_input("Password", type="password", key="login_pass")
+        email = st.text_input("Email")
+        password = st.text_input("Password", type="password")
 
         if st.button("Login"):
-            # SIMULASI LOGIN (bisa diganti database)
             if email and password:
                 st.session_state.login = True
-                st.session_state.role = "guru"
                 st.rerun()
             else:
-                st.error("Isi email dan password")
+                st.error("Isi data lengkap")
 
-    # REGISTER
     with tab2:
-        st.subheader("Daftar")
-        email2 = st.text_input("Email baru", key="reg_email")
-        pass2 = st.text_input("Password baru", type="password", key="reg_pass")
+        email2 = st.text_input("Email baru")
+        pass2 = st.text_input("Password baru", type="password")
         role = st.selectbox("Daftar sebagai", ["siswa", "guru"])
 
         if st.button("Daftar"):
             if email2 and pass2:
-                st.success("Akun berhasil dibuat! Silakan login")
+                st.success("Akun berhasil dibuat")
             else:
                 st.warning("Lengkapi data")
 
+    st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
 
 # =========================
@@ -140,12 +133,11 @@ with col2:
 with col3:
     if st.button("🚪 Logout"):
         logout()
-        st.rerun()
 
 st.divider()
 
 # =========================
-# DATA (SAFE DEMO)
+# DATA DEMO
 # =========================
 @st.cache_data
 def load_data():
@@ -164,52 +156,28 @@ if df.empty:
     st.stop()
 
 # =========================
-# ANALISIS (SAFE)
-# =========================
-try:
-    df["Logika"] = df.iloc[:, 0].apply(lambda x: 3)
-    df["Kreatif"] = df.iloc[:, 0].apply(lambda x: 3)
-    df["Teknik"] = df.iloc[:, 0].apply(lambda x: 3)
-    df["Sosial"] = df.iloc[:, 0].apply(lambda x: 3)
-    df["Skor"] = 3
-except:
-    df["Skor"] = 0
-
-# =========================
 # MENU
 # =========================
 menu = st.radio("Menu", ["Dashboard", "Data", "Ranking", "Settings"], horizontal=True)
 
-# =========================
-# DASHBOARD
-# =========================
 if menu == "Dashboard":
     st.subheader("📊 Dashboard")
 
     c1, c2, c3 = st.columns(3)
     c1.metric("Total Siswa", len(df))
-    c2.metric("Rata-rata Skor", round(df["Skor"].mean(), 2))
+    c2.metric("Rata-rata", 80)
     c3.metric("Status", "Aktif")
 
-    st.bar_chart(df["Skor"])
+    st.bar_chart(df.iloc[:, 0:1])
 
-# =========================
-# DATA
-# =========================
 elif menu == "Data":
-    st.subheader("📋 Data Siswa")
+    st.subheader("📋 Data")
     st.dataframe(df)
 
-# =========================
-# RANKING
-# =========================
 elif menu == "Ranking":
     st.subheader("🏆 Ranking")
     st.dataframe(df.head(10))
 
-# =========================
-# SETTINGS
-# =========================
 elif menu == "Settings":
     st.subheader("⚙️ Settings")
 
@@ -217,7 +185,7 @@ elif menu == "Settings":
         st.rerun()
 
     st.download_button(
-        "Download Data",
+        "Download CSV",
         df.to_csv(index=False),
         file_name="data.csv"
     )
