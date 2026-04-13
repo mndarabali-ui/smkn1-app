@@ -79,56 +79,47 @@ if "page" not in st.session_state:
 # LOGIN PAGE (CENTER FULL)
 # =========================
 if not st.session_state.login:
+    # Membuka container login
+    st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-    st.markdown("<div class='center-screen'>", unsafe_allow_html=True)
+    # Area Logo (Dikecilkan pakai kolom tengah yang sempit)
+    col_l1, col_l2, col_l3 = st.columns([1.5, 0.5, 1.5])
+    with col_l2:
+        if os.path.exists("logo.png"):
+            st.image("logo.png", use_container_width=True)
+        else:
+            st.write("🏫")
 
-    # LOGO CENTER
-    if os.path.exists("logo.png"):
-        st.image("logo.png", width=140)
-    else:
-        st.write("🏫")
-
-    # TITLE
+    # Judul & Deskripsi
     st.markdown("""
-        <div class="title">
-            SMKN 1 Denpasar
+        <div class='login-header'>
+            <div class='title'>SMKN 1 Denpasar</div>
+            <div style='color: gray; font-size: 14px; margin-bottom: 20px;'>
+                Sistem Analisis Minat & Bakat Siswa
+            </div>
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    # LOGIN / REGISTER
+    # Form Login & Daftar
     tab1, tab2 = st.tabs(["Login", "Daftar"])
 
     with tab1:
-        email = st.text_input("Email")
-        password = st.text_input("Password", type="password")
-
-        if st.button("Login"):
-            users = load_users()
-            user = users[(users["email"] == email) & (users["password"] == password)]
-
-            if not user.empty:
+        email = st.text_input("Email", key="login_user")
+        password = st.text_input("Password", type="password", key="login_pass")
+        if st.button("Login", use_container_width=True):
+            if email and password:
                 st.session_state.login = True
-                st.session_state.role = user.iloc[0]["role"]
                 st.rerun()
             else:
-                st.error("Login gagal")
+                st.error("Isi email & password")
 
     with tab2:
-        email = st.text_input("Email baru")
-        password = st.text_input("Password baru", type="password")
-        role = st.selectbox("Daftar sebagai", ["siswa", "guru"])
+        st.text_input("Email baru", key="reg_user")
+        st.text_input("Password baru", type="password", key="reg_pass")
+        st.selectbox("Daftar sebagai", ["siswa", "guru"])
+        st.button("Daftar", use_container_width=True)
 
-        if st.button("Daftar"):
-            users = load_users()
-
-            if email in users["email"].values:
-                st.warning("Email sudah terdaftar")
-            else:
-                save_user(email, password, role)
-                st.success("Akun berhasil dibuat!")
-
+    st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
 
 # =========================
