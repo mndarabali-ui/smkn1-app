@@ -19,7 +19,7 @@ st.markdown("""
     background-color: #f8fafc;
 }
 
-/* LOGIN BOX */
+/* LOGIN BOX UTAMA */
 .login-box {
     max-width: 420px;
     margin: auto;
@@ -42,11 +42,6 @@ st.markdown("""
     display: flex;
     justify-content: center;
 }
-
-/* Atur jarak container utama */
-.block-container {
-    padding-top: 2rem;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -67,9 +62,10 @@ def logout():
 # LOGIN PAGE
 # =========================
 if not st.session_state.login:
+    # Pembungkus utama dipindahkan ke sini
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-    # 1. Logo Center
+    # Logo Center (Menggunakan kolom untuk mengatur ukuran)
     col_l1, col_l2, col_l3 = st.columns([1.5, 0.5, 1.5])
     with col_l2:
         if os.path.exists("logo.png"):
@@ -77,7 +73,7 @@ if not st.session_state.login:
         else:
             st.write("🏫")
 
-    # 2. Judul Center
+    # Teks Judul Center
     st.markdown("""
         <div style='text-align: center;'>
             <div class='title'>SMKN 1 Denpasar</div>
@@ -87,7 +83,7 @@ if not st.session_state.login:
         </div>
     """, unsafe_allow_html=True)
 
-    # 3. Form Login
+    # Form Login & Daftar
     tab1, tab2 = st.tabs(["Login", "Daftar"])
     with tab1:
         email = st.text_input("Email", key="login_user")
@@ -95,16 +91,14 @@ if not st.session_state.login:
         if st.button("Login", use_container_width=True, type="primary"):
             if email and password:
                 st.session_state.login = True
-                st.session_state.role = "guru" # Inisialisasi agar menu Data tidak error
+                st.session_state.role = "guru"
                 st.rerun()
-            else:
-                st.error("Silakan masukkan email dan password")
     
     st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
 
 # ============================================================
-# DASHBOARD UTAMA (Muncul Setelah Login)
+# DASHBOARD UTAMA
 # ============================================================
 
 # HEADER & TOMBOL LOGOUT
@@ -114,7 +108,7 @@ with head1:
     st.caption("Selamat datang di Sistem Analisis SMKN 1 Denpasar")
 
 with head2:
-    st.write("##") # Memberikan jarak vertikal agar sejajar dengan judul
+    st.write("##") 
     if st.button("🚪 Logout", use_container_width=True):
         logout()
 
@@ -136,7 +130,7 @@ def load_data():
 df = load_data()
 
 if df.empty:
-    st.warning("Data tidak tersedia atau gagal memuat dari Google Sheets.")
+    st.warning("Data tidak tersedia.")
     st.stop()
 
 # =========================
@@ -180,25 +174,18 @@ if menu == "Dashboard":
 
 elif menu == "Data":
     st.subheader("📋 Database Lengkap Siswa")
-    # Pengecekan role sudah aman, tidak akan AttributeError lagi
     if st.session_state.role == "guru":
         st.dataframe(df, use_container_width=True)
     else:
-        st.warning("Maaf, hanya akun dengan akses Guru yang bisa melihat database.")
+        st.warning("Hanya guru yang bisa melihat database.")
 
 elif menu == "Ranking":
-    st.subheader("🏆 Top 10 Ranking Skor Tertinggi")
+    st.subheader("🏆 Top 10 Ranking")
     top = df.sort_values(by="Skor", ascending=False).head(10)
     st.table(top[["Nama Lengkap", "Jurusan SMK", "Skor"]])
 
 elif menu == "Settings":
     st.subheader("⚙️ Pengaturan")
-    if st.button("Refresh / Sinkronisasi Data"):
+    if st.button("Refresh Data"):
         st.rerun()
-    
-    st.download_button(
-        "Download Data Siswa (CSV)",
-        df.to_csv(index=False),
-        file_name="data_siswa_smkn1.csv",
-        mime="text/csv"
-    )
+    st.download_button("Download CSV", df.to_csv(index=False), file_name="data.csv")
