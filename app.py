@@ -66,7 +66,6 @@ if not st.session_state.login:
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
     # Logo Center (Menggunakan kolom untuk mengatur ukuran)
-    col_l1, col_l2, col_l3 = st.columns([1.5, 0.5, 1.5])
     with col_l2:
         if os.path.exists("logo.png"):
             st.image("logo.png", use_container_width=True)
