@@ -61,17 +61,17 @@ def logout():
 # LOGIN PAGE
 # =========================
 if not st.session_state.login:
-    st.write("##") # Jarak dari atas layar
+    st.write("##") 
     
-    # 1. LOGO (Di luar kotak)
-    col_l1, col_l2, col_l3 = 
+    # 1. LOGO (DI LUAR KOTAK)
+    col_l1, col_l2, col_l3 = st.columns([1.5, 0.5, 1.5])
     with col_l2:
         if os.path.exists("logo.png"):
             st.image("logo.png", use_container_width=True)
         else:
             st.write("🏫")
 
-    # 2. TULISAN JUDUL (Sekarang di luar kotak supaya tidak ada background putih)
+    # 2. JUDUL (DI LUAR KOTAK - Agar background putihnya hilang)
     st.markdown("""
         <div style='text-align: center; margin-bottom: 20px;'>
             <div style='font-size: 26px; font-weight: 700; color: #1e293b;'>SMKN 1 Denpasar</div>
@@ -81,7 +81,7 @@ if not st.session_state.login:
         </div>
     """, unsafe_allow_html=True)
 
-    # 3. KOTAK PUTIH (Hanya membungkus Form Login/Daftar)
+    # 3. KOTAK PUTIH DIMULAI DISINI (Hanya membungkus form input)
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
     tab1, tab2 = st.tabs(["Login", "Daftar"])
@@ -94,7 +94,8 @@ if not st.session_state.login:
                 st.session_state.role = "guru"
                 st.rerun()
     
-    st.markdown("</div>", unsafe_allow_html=True) # Penutup login-box
+    # Penutup kotak putih
+    st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
 
 # ============================================================
