@@ -64,7 +64,7 @@ if not st.session_state.login:
     st.write("##") # Jarak dari atas layar
     
     # 1. LOGO (Di luar kotak)
-    col_l1, col_l2, col_l3 = st.columns([1.5, 0.5, 1.5])
+    col_l1, col_l2, col_l3 = 
     with col_l2:
         if os.path.exists("logo.png"):
             st.image("logo.png", use_container_width=True)
