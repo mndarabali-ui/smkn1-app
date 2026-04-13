@@ -12,12 +12,11 @@ st.set_page_config(
 )
 
 # =========================
-# MODERN STYLE
+# STYLE MODERN
 # =========================
 st.markdown("""
 <style>
 
-/* background */
 .stApp {
     background: #f5f7fb;
 }
@@ -26,12 +25,12 @@ st.markdown("""
 .header {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding: 15px 20px;
+    gap: 12px;
+    padding: 12px 18px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 /* TITLE */
@@ -43,26 +42,24 @@ st.markdown("""
 /* CARD */
 .card {
     background: white;
-    padding: 20px;
+    padding: 15px;
     border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    margin-bottom: 15px;
 }
 
 /* BUTTON */
 .stButton button {
     border-radius: 8px;
-    border: none;
     background: #2563eb;
     color: white;
-    padding: 8px 16px;
+    border: none;
 }
 
-/* RADIO MENU */
+/* MENU */
 div[role="radiogroup"] > label {
-    padding: 6px 14px;
-    border-radius: 8px;
     background: white;
+    padding: 6px 12px;
+    border-radius: 8px;
     margin-right: 5px;
 }
 
@@ -70,13 +67,36 @@ div[role="radiogroup"] > label {
 """, unsafe_allow_html=True)
 
 # =========================
-# HEADER
+# SESSION LOGIN
 # =========================
-col1, col2 = st.columns([1, 8])
+if "login" not in st.session_state:
+    st.session_state.login = True  # langsung login biar fokus UI
+
+# =========================
+# LOGOUT FUNCTION
+# =========================
+def logout():
+    st.session_state.login = False
+    st.rerun()
+
+# =========================
+# LOGIN CHECK
+# =========================
+if not st.session_state.login:
+    st.title("🔒 Silakan Login")
+    if st.button("Login"):
+        st.session_state.login = True
+        st.rerun()
+    st.stop()
+
+# =========================
+# HEADER (LOGO + TITLE + LOGOUT)
+# =========================
+col1, col2, col3 = st.columns([1, 6, 2])
 
 with col1:
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=70)
+        st.image("logo.png", width=60)
     else:
         st.write("🏫")
 
@@ -84,10 +104,13 @@ with col2:
     st.markdown("<div class='title'>SMKN 1 Denpasar</div>", unsafe_allow_html=True)
     st.caption("Sistem Analisis Minat & Bakat Siswa")
 
+with col3:
+    st.button("🚪 Logout", on_click=logout)
+
 st.divider()
 
 # =========================
-# LOAD DATA
+# LOAD DATA (AMAN)
 # =========================
 @st.cache_data
 def load_data():
@@ -102,42 +125,51 @@ def load_data():
 df = load_data()
 
 if df.empty:
-    st.error("Data gagal dimuat")
+    st.error("Data tidak bisa dimuat")
     st.stop()
 
 # =========================
 # ANALISIS
 # =========================
-df["Logika"] = df[[
-    "Saya suka membuat program / coding",
-    "Saya suka bekerja dengan angka / matematika",
-    "Saya suka bekerja menggunakan komputer"
-]].mean(axis=1)
+try:
+    df["Logika"] = df[
+        ["Saya suka membuat program / coding",
+         "Saya suka bekerja dengan angka / matematika",
+         "Saya suka bekerja menggunakan komputer"]
+    ].mean(axis=1)
 
-df["Kreatif"] = df[[
-    "Saya suka membuat desain visual (poster, video, UI)",
-    "Saya suka menggambar / ilustrasi"
-]].mean(axis=1)
+    df["Kreatif"] = df[
+        ["Saya suka membuat desain visual (poster, video, UI)",
+         "Saya suka menggambar / ilustrasi"]
+    ].mean(axis=1)
 
-df["Teknik"] = df[[
-    "Saya suka memperbaiki mesin / kendaraan",
-    "Saya suka bekerja dengan listrik / instalasi",
-    "Saya suka merakit atau membongkar alat",
-    "Saya suka bekerja di lapangan"
-]].mean(axis=1)
+    df["Teknik"] = df[
+        ["Saya suka memperbaiki mesin / kendaraan",
+         "Saya suka bekerja dengan listrik / instalasi",
+         "Saya suka merakit atau membongkar alat",
+         "Saya suka bekerja di lapangan"]
+    ].mean(axis=1)
 
-df["Sosial"] = df[[
-    "Saya suka berbicara di depan umum",
-    "Saya suka bekerja dalam tim",
-    "Saya suka memimpin atau mengatur orang lain"
-]].mean(axis=1)
+    df["Sosial"] = df[
+        ["Saya suka berbicara di depan umum",
+         "Saya suka bekerja dalam tim",
+         "Saya suka memimpin atau mengatur orang lain"]
+    ].mean(axis=1)
 
-df["Skor"] = df[["Logika","Kreatif","Teknik","Sosial"]].mean(axis=1)
+    df["Skor"] = df[["Logika","Kreatif","Teknik","Sosial"]].mean(axis=1)
+
+except:
+    st.warning("Kolom tidak sesuai, Skor diset 0")
+    df["Skor"] = 0
 
 # =========================
 # MENU
 # =========================
-menu = st.radio("Menu", ["Dashboard", "Data", "Ranking", "Settings"], horizontal=True)
+menu = st.radio(
+    "Menu",
+    ["Dashboard", "Data", "Ranking", "Settings"],
+    horizontal=True
+)
 
 # =========================
 # DASHBOARD
@@ -146,13 +178,10 @@ if menu == "Dashboard":
 
     st.markdown("### 📊 Dashboard")
 
-    col1, col2, col3 = st.columns(3)
-
-    col1.metric("Total Siswa", len(df))
-    col2.metric("Rata-rata Skor", round(df["Skor"].mean(), 2))
-    col3.metric("Kategori Tertinggi", "Analisis Minat")
-
-    st.markdown("### 📈 Grafik Minat")
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Total Siswa", len(df))
+    c2.metric("Rata-rata Skor", round(df["Skor"].mean(), 2))
+    c3.metric("Kategori", "Minat & Bakat")
 
     st.bar_chart(df[["Logika","Kreatif","Teknik","Sosial"]])
 
@@ -169,10 +198,8 @@ elif menu == "Data":
 # =========================
 elif menu == "Ranking":
 
-    st.markdown("### 🏆 Top Ranking")
-
-    top = df.sort_values("Skor", ascending=False).head(10)
-    st.dataframe(top, use_container_width=True)
+    st.markdown("### 🏆 Ranking Top 10")
+    st.dataframe(df.sort_values("Skor", ascending=False).head(10))
 
 # =========================
 # SETTINGS
@@ -185,7 +212,7 @@ elif menu == "Settings":
         st.rerun()
 
     st.download_button(
-        "Download Data CSV",
+        "Download CSV",
         df.to_csv(index=False),
-        file_name="siswa.csv"
+        file_name="data_siswa.csv"
     )
