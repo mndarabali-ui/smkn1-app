@@ -79,10 +79,10 @@ if "page" not in st.session_state:
 # LOGIN PAGE (CENTER FULL)
 # =========================
 if not st.session_state.login:
-    # Membuka container login
+    # Membuka container login box
     st.markdown("<div class='login-box'>", unsafe_allow_html=True)
 
-    # Area Logo (Dikecilkan pakai kolom tengah yang sempit)
+    # 1. Logo (Dibuat kecil dan di tengah pakai kolom)
     col_l1, col_l2, col_l3 = st.columns([1.5, 0.5, 1.5])
     with col_l2:
         if os.path.exists("logo.png"):
@@ -90,9 +90,9 @@ if not st.session_state.login:
         else:
             st.write("🏫")
 
-    # Judul & Deskripsi
+    # 2. JUDUL & SUBJUDUL (Dibuat ke tengah dengan style text-align: center)
     st.markdown("""
-        <div class='login-header'>
+        <div style='text-align: center;'>
             <div class='title'>SMKN 1 Denpasar</div>
             <div style='color: gray; font-size: 14px; margin-bottom: 20px;'>
                 Sistem Analisis Minat & Bakat Siswa
@@ -100,9 +100,9 @@ if not st.session_state.login:
         </div>
     """, unsafe_allow_html=True)
 
-    # Form Login & Daftar
+    # 3. Form Login (Tabs)
     tab1, tab2 = st.tabs(["Login", "Daftar"])
-
+    
     with tab1:
         email = st.text_input("Email", key="login_user")
         password = st.text_input("Password", type="password", key="login_pass")
@@ -110,15 +110,8 @@ if not st.session_state.login:
             if email and password:
                 st.session_state.login = True
                 st.rerun()
-            else:
-                st.error("Isi email & password")
-
-    with tab2:
-        st.text_input("Email baru", key="reg_user")
-        st.text_input("Password baru", type="password", key="reg_pass")
-        st.selectbox("Daftar sebagai", ["siswa", "guru"])
-        st.button("Daftar", use_container_width=True)
-
+    
+    # Menutup container login box
     st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
 
