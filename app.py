@@ -183,12 +183,19 @@ if not st.session_state.login:
     # Header terpusat dengan logo.png
     col_l, col_c, col_r = st.columns([1, 1.2, 1])
     with col_c:
+        import base64
+        logo_html = ""
         if os.path.exists("logo.png"):
-            st.image("logo.png", width=100, use_column_width=False)
-        st.markdown("""
-            <p class="school-title" style="text-align:center;">SMKN 1 Denpasar</p>
-            <p class="school-subtitle" style="text-align:center;">Sistem Analisis Minat Siswa</p>
-            <br>
+            with open("logo.png", "rb") as f:
+                b64 = base64.b64encode(f.read()).decode()
+            logo_html = f'<img src="data:image/png;base64,{b64}" style="width:64px; height:64px; object-fit:contain; margin-bottom:8px;">'
+
+        st.markdown(f"""
+            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; margin-bottom:16px;">
+                {logo_html}
+                <p class="school-title">SMKN 1 Denpasar</p>
+                <p class="school-subtitle">Sistem Analisis Minat Siswa</p>
+            </div>
         """, unsafe_allow_html=True)
 
         tab1, tab2 = st.tabs(["🔐 Masuk", "📝 Daftar"])
@@ -230,14 +237,22 @@ if not st.session_state.login:
 
 # Header setelah login dengan logo.png
 with st.container():
-    hcol1, hcol2, hcol3 = st.columns([1, 2, 1])
-    with hcol2:
-        if os.path.exists("logo.png"):
-            st.image("logo.png", width=80, use_column_width=False)
-        st.markdown("""
-            <p class="school-title" style="text-align:center;">SMKN 1 Denpasar</p>
-            <p class="school-subtitle" style="text-align:center;">Sistem Analisis Minat Siswa</p>
-        """, unsafe_allow_html=True)
+    import base64
+    logo_html = ""
+    if os.path.exists("logo.png"):
+        with open("logo.png", "rb") as f:
+            b64 = base64.b64encode(f.read()).decode()
+        logo_html = f'<img src="data:image/png;base64,{b64}" style="width:60px; height:60px; object-fit:contain; margin-bottom:6px;">'
+
+    st.markdown(f"""
+        <div style="display:flex; flex-direction:column; align-items:center; text-align:center;
+                    padding: 20px 0 16px; background:#ffffff;
+                    border-bottom: 1px solid #e2e8f0; margin-bottom:16px;">
+            {logo_html}
+            <p class="school-title">SMKN 1 Denpasar</p>
+            <p class="school-subtitle">Sistem Analisis Minat Siswa</p>
+        </div>
+    """, unsafe_allow_html=True)
 
 # Info pengguna & logout di pojok kanan atas
 col_info, col_logout = st.columns([6, 1])
