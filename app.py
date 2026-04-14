@@ -21,6 +21,19 @@ st.markdown("""
 /* Reset & Base */
 .stApp {
     background-color: #f0f4f8;
+    overflow-y: auto !important;
+}
+
+/* Aktifkan scroll di semua wrapper Streamlit */
+html, body {
+    overflow-y: auto !important;
+    height: auto !important;
+}
+.main, [data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"] {
+    overflow-y: auto !important;
+    height: auto !important;
+    max-height: none !important;
 }
 
 /* Header terpusat */
@@ -108,7 +121,7 @@ st.markdown("""
 
 /* Blok konten utama */
 .block-container {
-    padding: 0 32px 32px 32px;
+    padding: 40px 32px 80px 32px;
     max-width: 1200px;
 }
 
