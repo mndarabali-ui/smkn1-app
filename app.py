@@ -117,15 +117,9 @@ section[data-testid="stSidebar"] {
     background-color: #1e293b;
 }
 
-/* Login card */
-.login-card {
-    background: white;
-    border-radius: 16px;
-    padding: 36px;
-    border: 1px solid #e2e8f0;
-    max-width: 420px;
-    margin: 40px auto;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+/* Sembunyikan padding default streamlit di halaman login */
+.login-wrap .block-container {
+    padding-top: 0;
 }
 
 /* Badge rekomendasi */
@@ -186,23 +180,20 @@ if "email" not in st.session_state:
 # =========================
 if not st.session_state.login:
 
-    # Header terpusat
-    st.markdown("""
-        <div class="app-header">
-            <div class="logo-circle">S1</div>
-            <p class="school-title">SMKN 1 Denpasar</p>
-            <p class="school-subtitle">Sistem Analisis Minat Siswa</p>
-        </div>
-    """, unsafe_allow_html=True)
+    # Header terpusat dengan logo.png
+    col_l, col_c, col_r = st.columns([1, 1.2, 1])
+    with col_c:
+        if os.path.exists("logo.png"):
+            st.image("logo.png", width=100, use_column_width=False)
+        st.markdown("""
+            <p class="school-title" style="text-align:center;">SMKN 1 Denpasar</p>
+            <p class="school-subtitle" style="text-align:center;">Sistem Analisis Minat Siswa</p>
+            <br>
+        """, unsafe_allow_html=True)
 
-    col_left, col_center, col_right = st.columns([1, 1.2, 1])
-
-    with col_center:
-        st.markdown("<div class='login-card'>", unsafe_allow_html=True)
         tab1, tab2 = st.tabs(["🔐 Masuk", "📝 Daftar"])
 
         with tab1:
-            st.markdown("#### Selamat datang kembali")
             email_in = st.text_input("Alamat Email", placeholder="contoh@email.com", key="login_email")
             pass_in  = st.text_input("Password", type="password", placeholder="Masukkan password", key="login_pass")
             st.markdown("<br>", unsafe_allow_html=True)
@@ -235,20 +226,18 @@ if not st.session_state.login:
                     save_user(new_email, new_pass, new_role)
                     st.success("✅ Akun berhasil dibuat! Silakan masuk.")
 
-        st.markdown("</div>", unsafe_allow_html=True)
-
     st.stop()
 
-# =========================
-# HEADER APLIKASI (setelah login)
-# =========================
-st.markdown("""
-    <div class="app-header">
-        <div class="logo-circle">S1</div>
-        <p class="school-title">SMKN 1 Denpasar</p>
-        <p class="school-subtitle">Sistem Analisis Minat Siswa</p>
-    </div>
-""", unsafe_allow_html=True)
+# Header setelah login dengan logo.png
+with st.container():
+    hcol1, hcol2, hcol3 = st.columns([1, 2, 1])
+    with hcol2:
+        if os.path.exists("logo.png"):
+            st.image("logo.png", width=80, use_column_width=False)
+        st.markdown("""
+            <p class="school-title" style="text-align:center;">SMKN 1 Denpasar</p>
+            <p class="school-subtitle" style="text-align:center;">Sistem Analisis Minat Siswa</p>
+        """, unsafe_allow_html=True)
 
 # Info pengguna & logout di pojok kanan atas
 col_info, col_logout = st.columns([6, 1])
