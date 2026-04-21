@@ -18,13 +18,10 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* Reset & Base */
 .stApp {
     background-color: #f0f4f8;
     overflow-y: auto !important;
 }
-
-/* Aktifkan scroll di semua wrapper Streamlit */
 html, body {
     overflow-y: auto !important;
     height: auto !important;
@@ -32,11 +29,7 @@ html, body {
 .main, [data-testid="stAppViewContainer"],
 [data-testid="stAppViewBlockContainer"] {
     overflow-y: auto !important;
-    height: auto !important;
-    max-height: none !important;
-}
-
-/* Header terpusat */
+    height: auto !important
 .app-header {
     display: flex;
     flex-direction: column;
@@ -79,8 +72,6 @@ html, body {
     margin-top: 2px;
     letter-spacing: 0.04em;
 }
-
-/* Card metrik */
 [data-testid="metric-container"] {
     background-color: #ffffff;
     border: 1px solid #e2e8f0;
@@ -89,7 +80,6 @@ html, body {
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
-/* Tabel */
 [data-testid="stDataFrame"] {
     border-radius: 12px;
     border: 1px solid #e2e8f0;
@@ -119,7 +109,6 @@ html, body {
     border-radius: 8px;
 }
 
-/* Blok konten utama */
 .block-container {
     padding: 40px 32px 80px 32px;
     max-width: 1200px;
@@ -130,7 +119,6 @@ section[data-testid="stSidebar"] {
     background-color: #1e293b;
 }
 
-/* Sembunyikan padding default streamlit di halaman login */
 .login-wrap .block-container {
     padding-top: 0;
 }
@@ -244,7 +232,7 @@ if not st.session_state.login:
                     st.warning("Harap isi semua kolom.")
                 else:
                     save_user(new_email, new_pass, new_role)
-                    st.success("✅ Akun berhasil dibuat! Silakan masuk.")
+                    st.success("Akun berhasil dibuat! Silakan masuk.")
 
     st.stop()
 
@@ -290,7 +278,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 # =========================
 menu = st.radio(
     "",
-    ["📊 Dashboard", "📋 Data Siswa", "🏆 Ranking", "⚙️ Pengaturan"],
+    ["Dashboard", "Data Siswa", "Ranking", "Pengaturan"],
     horizontal=True,
     label_visibility="collapsed"
 )
@@ -348,7 +336,7 @@ df = load_data()
 # =========================
 # DASHBOARD
 # =========================
-if menu == "📊 Dashboard":
+if menu == "Dashboard":
 
     st.subheader("Ringkasan Data Siswa")
 
@@ -396,7 +384,7 @@ if menu == "📊 Dashboard":
 # =========================
 # DATA SISWA
 # =========================
-elif menu == "📋 Data Siswa":
+elif menu == "Data Siswa":
 
     st.subheader("Data Lengkap Siswa")
 
@@ -405,12 +393,12 @@ elif menu == "📋 Data Siswa":
         kolom_ada    = [k for k in kolom_tampil if k in df.columns]
         st.dataframe(df[kolom_ada].round(2), use_container_width=True, hide_index=True)
     else:
-        st.info("🔒 Akses terbatas. Hanya guru yang dapat melihat data lengkap siswa.")
+        st.info("Akses terbatas. Hanya guru yang dapat melihat data lengkap siswa.")
 
 # =========================
 # RANKING
 # =========================
-elif menu == "🏆 Ranking":
+elif menu == "Ranking":
 
     st.subheader("Peringkat 10 Siswa Terbaik")
 
@@ -425,7 +413,7 @@ elif menu == "🏆 Ranking":
 # =========================
 # PENGATURAN
 # =========================
-elif menu == "⚙️ Pengaturan":
+elif menu == "Pengaturan":
 
     st.subheader("Pengaturan Aplikasi")
 
