@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import os
@@ -23,12 +22,17 @@ st.markdown("""
 
 /* FULL CENTER LOGIN */
 .center-screen {
-    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: column;
     text-align: center;
+    padding-top: 0;
 }
 
 /* TITLE */
@@ -85,7 +89,7 @@ if not st.session_state.login:
 
     # LOGO CENTER
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=140)
+        st.image("logo.png", width=120)
     else:
         st.write("🏫")
 
@@ -186,8 +190,13 @@ df["Rekomendasi"] = df.apply(rekom, axis=1)
 # =========================
 # MENU
 # =========================
+st.markdown("""
+    <div class="title" style="margin-bottom: 10px;">
+        SMKN 1 Denpasar
+    </div>
+""", unsafe_allow_html=True)
 menu = st.radio(
-    "Menu",
+    "",
     ["Dashboard", "Data", "Ranking", "Settings"],
     horizontal=True
 )
