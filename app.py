@@ -310,7 +310,7 @@ st.markdown("<hr>", unsafe_allow_html=True)
 # =========================
 menu = st.radio(
     "",
-    ["📊 Dashboard", "📋 Data Siswa", "🏆 Ranking", "⚙️ Pengaturan"],
+    ["Dashboard", "Data Siswa", "Ranking", "Pengaturan"],
     horizontal=True,
     label_visibility="collapsed"
 )
