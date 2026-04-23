@@ -17,34 +17,24 @@ st.markdown("""
 <style>
 
 .stApp {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
+    background-color: #f8fafc;
 }
 
 /* FULL CENTER LOGIN */
 .center-screen {
-    position: relative;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     text-align: center;
-    padding-top: 40px;
-    padding-bottom: 30px;
+    padding-top: 30px;
+    padding-bottom: 20px;
 }
 
 /* LOGO CONTAINER */
 .logo-container {
-    background: white;
-    border-radius: 50%;
-    width: 140px;
-    height: 140px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .logo-container img {
@@ -54,36 +44,24 @@ st.markdown("""
 
 /* TITLE */
 .title {
-    font-size: 36px;
-    font-weight: 900;
-    margin-top: 20px;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    letter-spacing: 1px;
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #333;
 }
 
 .subtitle {
-    font-size: 14px;
-    color: #e0e0e0;
-    margin-top: 8px;
-    font-weight: 300;
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    font-weight: 400;
 }
 
 /* container */
 .block-container {
     padding-left: 40px;
     padding-right: 40px;
-}
-
-/* LOGIN FORM CONTAINER */
-.login-container {
-    background: white;
-    border-radius: 15px;
-    padding: 40px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 420px;
-    margin: 30px auto;
-    width: 100%;
 }
 
 </style>
@@ -164,9 +142,7 @@ if not st.session_state.login:
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # LOGIN / REGISTER - In container
-    st.markdown("<div class='login-container'>", unsafe_allow_html=True)
-
+    # LOGIN / REGISTER
     tab1, tab2 = st.tabs(["Login", "Daftar"])
 
     with tab1:
@@ -198,8 +174,6 @@ if not st.session_state.login:
                 save_user(email, password, role)
                 st.success("Akun berhasil dibuat!")
 
-    st.markdown("</div>", unsafe_allow_html=True)
-    
     st.stop()
 
 # =========================
