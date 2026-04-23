@@ -167,16 +167,28 @@ if not os.path.exists(USER_FILE):
     pd.DataFrame(columns=["email", "password", "role"]).to_csv(USER_FILE, index=False)
 
 def load_users():
-    df = pd.read_csv(USER_FILE)
+    df = pd.read_csv(USER_FILE, dtype=str)
+    df.columns = df.columns.str.strip()
+    df["email"]    = df["email"].str.strip()
+    df["password"] = df["password"].str.strip()
     if "role" not in df.columns:
         df["role"] = "siswa"
+    else:
+        df["role"] = df["role"].str.strip().fillna("siswa")
     return df
 
 def save_user(email, password, role):
     users = load_users()
-    new = pd.DataFrame([[email, password, role]], columns=["email", "password", "role"])
+    # Cegah duplikat
+    if email.strip() in users["email"].values:
+        return False
+    new = pd.DataFrame(
+        [[email.strip(), password.strip(), role.strip()]],
+        columns=["email", "password", "role"]
+    )
     users = pd.concat([users, new], ignore_index=True)
     users.to_csv(USER_FILE, index=False)
+    return True
 
 # =========================
 # SESSION STATE
@@ -220,11 +232,16 @@ if not st.session_state.login:
 
             if st.button("Masuk", use_container_width=True):
                 users = load_users()
-                user = users[(users["email"] == email_in) & (users["password"] == pass_in)]
+                email_cmp = str(email_in).strip()
+                pass_cmp  = str(pass_in).strip()
+                user = users[
+                    (users["email"] == email_cmp) &
+                    (users["password"] == pass_cmp)
+                ]
                 if not user.empty:
                     st.session_state.login = True
                     st.session_state.role  = user.iloc[0]["role"]
-                    st.session_state.email = email_in
+                    st.session_state.email = email_cmp
                     st.rerun()
                 else:
                     st.error("Email atau password salah. Silakan coba lagi.")
@@ -237,14 +254,17 @@ if not st.session_state.login:
             st.markdown("<br>", unsafe_allow_html=True)
 
             if st.button("Buat Akun", use_container_width=True):
-                users = load_users()
-                if new_email in users["email"].values:
-                    st.warning("Email ini sudah terdaftar. Silakan masuk.")
-                elif not new_email or not new_pass:
+                e = new_email.strip()
+                p = new_pass.strip()
+                if not e or not p:
                     st.warning("Harap isi semua kolom.")
                 else:
-                    save_user(new_email, new_pass, new_role)
-                    st.success("✅ Akun berhasil dibuat! Silakan masuk.")
+                    users = load_users()
+                    if e in users["email"].values:
+                        st.warning("Email ini sudah terdaftar. Silakan masuk.")
+                    else:
+                        save_user(e, p, new_role)
+                        st.success("✅ Akun berhasil dibuat! Silakan pindah ke tab Masuk.")
 
     st.stop()
 
