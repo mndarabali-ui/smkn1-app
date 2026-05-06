@@ -264,7 +264,7 @@ if not st.session_state.login:
                         st.warning("Email ini sudah terdaftar. Silakan masuk.")
                     else:
                         save_user(e, p, new_role)
-                        st.success("✅ Akun berhasil dibuat! Silakan pindah ke tab Masuk.")
+                        st.success("Akun berhasil dibuat! Silakan pindah ke tab Masuk.")
 
     st.stop()
 
@@ -425,7 +425,7 @@ elif menu == "📋 Data Siswa":
         kolom_ada    = [k for k in kolom_tampil if k in df.columns]
         st.dataframe(df[kolom_ada].round(2), use_container_width=True, hide_index=True)
     else:
-        st.info("🔒 Akses terbatas. Hanya guru yang dapat melihat data lengkap siswa.")
+        st.info("Akses terbatas. Hanya guru yang dapat melihat data lengkap siswa.")
 
 # =========================
 # RANKING
